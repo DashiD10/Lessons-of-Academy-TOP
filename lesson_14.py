@@ -110,9 +110,91 @@ def main():
         print("Вы несовершеннолетний")
 
     input("Нажмите Enter для выхода")
-    exit()
+    # exit()
 
-main()
+main() 
+
+
+def print_all(*items):
+    print(items)
+    print(type(items))
+    for item in items:
+        print(item)
+
+
+print_all("ананас", "кокос", "яблоко", "банан")
+print_all('one', 'two', 'three')
+
+items = ["один", "два", "три"]
+print_all(*items)
+
+
+# PRACTICE - Функция c *words для проверки на палиндром
+"""
+Напишите функцию is_palindrome которая принимает *words аргументы
+и печатает Word - это ...
+Пусть проверка будет включать и регистр, а так же пробелы - чтобы многословные палиндромы тоже проверялись
+"""
+
+palindormes = [
+    "казак",
+    "КазаК",
+    "КазаК",
+    "Топот",
+    "ДОвоД",
+    "А роза упала на лапу Азора",
+    "Аргентина МаниТ негра",
+]
+
+def is_palindrome(*words):
+    for word in words:
+        word = word.lower().replace(" ", "")
+        if word == word[::-1]:
+            print(f"{word} - это палиндром")
+        else:
+            print(f"{word} - это не палиндром")
+
+is_palindrome(*palindormes)
+
+
+
+#ЧТО бы она могла отдавать наружу?
+# 1. Список списков. [["ТопоТ", True], ...]
+# 2. Список словарей [{"word": "ТопоТ", "result": True}, ...]
+# 3. Словарь {"ТопоТ": True, ...}
+
+
+def is_palindrome(*words):
+    result_dict = {}
+def is_palindrome(*words: str) -> list[dict]:
+    """
+    Функция проверки слов на палиндромность. Проверяет слова и фразы с учетом регистра и пробелов.
+    """
+    result_list = []
+
+
+    for word in words:
+        raw_words = word.lower().replace(" ", "")
+        if word not in result_dict.keys():
+            if raw_words == raw_words[::-1]:
+                result_dict[word.lower()] = True
+            else:
+                result_dict[word.lower()] = False
+        if raw_words == raw_words[::-1]:
+            result_list.append({"word": word, "result": True})
+        else:
+            result_list.append({"word": word, "result": False})
+
+    return result_dict
+    return result_list
+
+
+print(is_palindrome(*palindormes))
+# {'казак': True, 'КазаК': True, 'Топот': True, 'ДОвоД': True, 'А роза упала на лапу Азора': True, 'Аргентина МаниТ негра': True}
+
+{'казак': True, 'топот': True, 'довод': True, 'арозаупаланалапуазора': True, 'аргентинаманитнегра': True}
+# {'казак': True, 'топот': True, 'довод': True, 'арозаупаланалапуазора': True, 'аргентинаманитнегра': True}
+# [{'word': 'казак', 'result': True}, {'word': 'КазаК', 'result': True}, {'word': 'КазаК', 'result': True}, {'word': 'Топот', 'result': True}, {'word': 'ДОвоД', 'result': True}, {'word': 'А роза упала на лапу Азора', 'result': True}, {'word': 'Аргентина МаниТ негра', 'result': True}]
 
 
 

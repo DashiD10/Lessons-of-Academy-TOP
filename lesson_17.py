@@ -50,14 +50,23 @@ new_data = [
 json_string = json.dumps(metallica_songs, indent=4, ensure_ascii=False)
 back_data = json.loads(json_string)
 
-# with open("metallica.json", "w", encoding="utf-8") as file:
-#     json.dump(metallica_songs, file, indent=4, ensure_ascii=False)
+# Записываем данные:
+with open("metallica_songs.json", "w", encoding="utf-8") as file:
+    json.dump(metallica_songs, file, indent=4, ensure_ascii=False)
 
 #     # Дозаписываем данные:
-# with open("metallica.json", "a", encoding="utf-8") as file:
-#     json.dump(new_data, file, indent=4, ensure_ascii=False)
+# 1. Читаем
+with open("metallica_songs.json", "r", encoding="utf-8") as file:
+    data = json.load(file)
 
-with open("metallica.json", "r", encoding="utf-8") as file:
+#     # 2 Добавляем в исходные данные новые:
+data.extend(new_data)
+
+# 3. Переаписываем
+with open("metallica_songs.json", "w", encoding="utf-8") as file:
+    json.dump(data, file, indent=4, ensure_ascii=False)
+# прочитали
+with open("metallica_songs.json", "r", encoding="utf-8") as file:
     data = json.load(file)
 
     print(data)

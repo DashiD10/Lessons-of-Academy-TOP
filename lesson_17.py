@@ -214,3 +214,15 @@ print(result)
 # Read - прочитать из файла
 # Update - изменить данные в файле
 # Delete - удалить данные в файле
+
+import yaml 
+
+
+# Чтение YAML файла
+with open("config.yaml", "r", encodeing="utf-8") as file:
+    data = yaml.safe_load(file)
+
+# Запись данных в YAML файл
+with open("config.yaml", "w", encodeing="utf-8") as file:
+    yaml.dump(data, file, default_flow_style=False, allow_unicode=True)
+

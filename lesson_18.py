@@ -37,7 +37,12 @@ def foo():
 
 foo() 
 
-# bananas = print
+bananas = print
 
-# bananas("Привет!")
-# bananas("Как дела?")
+bananas("Привет!")
+bananas("Как дела?")
+
+one = "один"
+bir = one
+odin = bir
+print(odin)

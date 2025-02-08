@@ -80,7 +80,7 @@ print(product_sorter(product_list))
 print(product_sorter(product_list))
 
 product_list.append("лук")
-print(product_sorter())
-print(product_sorter())
+print(product_sorter(product_list))
+print(product_sorter(product_list))
     
  

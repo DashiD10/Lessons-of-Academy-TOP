@@ -117,9 +117,45 @@ def timer_decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         return result
     return wrapper
 
+
+def log_decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+    def wrapper(*args, **kwargs):
+        print(f'Вызывается функция {func.__name__} с аргументами {args} {kwargs}')
+        result = func(*args, **kwargs)
+        print(f'Функция {func.__name__} завершила работу с результатом {result}')
+        return result
+    return wrapper
+
+@log_decorator
 @timer_decorator
 def get_film_by_year(year: int) -> List[Dict[str, Any]]:
     return [film for film in full_dict.values() if film['year'] == year]
 
 print(get_film_by_year(2008))
 print(get_film_by_year(2019))
+
+
+
+def string_length_decorator(min_length: int) -> Callable:
+    def decorator(func: Callable[[str], str]) -> Callable[[str], str]:
+        def wrapper(name: str) -> str:
+            if len(name) < min_length:
+                raise ValueError(f"Длина строки должна быть не менее {min_length} символов")
+            return func(name)
+        return wrapper
+    return decorator
+
+@string_length_decorator(5)
+def hello(name: str) -> str:
+    return f"Привет, {name}!"
+
+# print(hello("Alice"))
+print(hello("Bob"))
+
+
+while True:
+    name = input("Введите имя: ")
+    try:
+        print(hello(name))
+    except ValueError as error:
+        print(error)

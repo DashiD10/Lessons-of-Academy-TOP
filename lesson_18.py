@@ -21,28 +21,22 @@
 # print(a)
 
 
-a = 2
+# a = 2
 
-def foo(): 
-    a = 3
-    print(f'a после объявления переменной = {a}')
+def foo(a: str): 
+#    a = local для foo
+    print(f'foo до вызова foo2 {a}')
 
     def foo2():
-        nonlocal a   # Позволяет обратиться к переменной из внешней функции foo
-        a = 4
-        print(f'a после объявления переменной = {a}')
+        # позволит переписать а из foo
+       return a
+    return foo2
 
-    foo2()
-    print(f'a после объявления переменной = {a}')
+f2 = foo("апельсин") 
+f3 = foo("банан")
+orange = f2()   #Замыкание. 
+banana = f3()
+print(f' принт1 {orange}')
+print(f' принт2 {banana}')
 
-foo() 
-
-bananas = print
-
-bananas("Привет!")
-bananas("Как дела?")
-
-one = "один"
-bir = one
-odin = bir
-print(odin)
+# f2 -> foo2 -> апельсин (local a)

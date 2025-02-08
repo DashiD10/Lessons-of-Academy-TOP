@@ -62,22 +62,22 @@ print(counter_0_2())
 
 product_list = ["морковь", "картофель", "свекла", "свекла", "чеснок"]
 
-def product_sort(products: list):
+def get_sorter():
     cach = []
 
-    def sorter():
+    def sorter(data_list: list):
         nonlocal cach
-        if cach and len(cach) == len(products):
+        if cach and len(cach) == len(data_list):
             return cach
         
-        cach = sorted(products)
+        cach = sorted(data_list)
         return cach
     
     return sorter
     
-product_sorter = product_sort(product_list)
-print(product_sorter())
-print(product_sorter())
+product_sorter = get_sorter()
+print(product_sorter(product_list))
+print(product_sorter(product_list))
 
 product_list.append("лук")
 print(product_sorter())

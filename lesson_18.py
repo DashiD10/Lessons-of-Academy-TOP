@@ -40,3 +40,24 @@ print(f' принт1 {orange}')
 print(f' принт2 {banana}')
 
 # f2 -> foo2 -> апельсин (local a)
+
+# Счетчик, который помнит свое состояние и может принять стартовую позицию
+
+def counter(start: int = 0, step: int = 1):
+
+    position = start
+
+    def tik():
+        nonlocal position
+        position += step
+        return position
+    
+    return tik
+
+counter_0_2 = counter(0, 2)
+print(counter_0_2())
+print(counter_0_2())
+print(counter_0_2())
+
+
+# product_list = ["морковь", "картофель", "свекла", "свекла", "чеснок"]

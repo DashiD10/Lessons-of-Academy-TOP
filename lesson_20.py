@@ -11,7 +11,7 @@
 
 
 # potatos = ["картошка", "картошка", "гнилая_картошка", "картошка", "гнилая_ картошка", "картошка"]
- 
+
 
 # def clean_potato(potato: str) -> str:
 #     return potato + "_очищенная"
@@ -80,7 +80,7 @@
 
 from marvel import full_dict
 
-full_list = [{'id': film_id, **film} for film_id, film in full_dict.items()]
+full_list = [{"id": film_id, **film} for film_id, film in full_dict.items()]
 
 print(full_list)
 
@@ -97,7 +97,9 @@ for film in full_list:
 # 2.1. Списковое выражение
 first_stage = [film for film in full_list if film["stage"] == stage]
 
-first_stage = list(filter(lambda film: "stage" in film and film["stage"] == stage, full_list))
+first_stage = list(
+    filter(lambda film: "stage" in film and film["stage"] == stage, full_list)
+)
 print(first_stage)
 
 # 3. Фильмы 2018 года
@@ -111,10 +113,17 @@ films_2018 = list(filter(lambda film: film["year"] == 2018, full_list))
 # films_after_2020 = [film for film in full_list if film["year"] > 2020]
 # films_after_2020 = list(filter(lambda film: film["year"] > 2020, full_list))
 
-films_after_2020 = [film for film in full_list if isinstance(film['year'], int) and film['year'] > 2020]
-films_after_2020 = list(filter(lambda film: isinstance(film['year'], int) and film['year'] > 2020, full_list))
+films_after_2020 = [
+    film for film in full_list if isinstance(film["year"], int) and film["year"] > 2020
+]
+films_after_2020 = list(
+    filter(
+        lambda film: isinstance(film["year"], int) and film["year"] > 2020, full_list
+    )
+)
 
 from pprint import pprint
+
 pprint(films_after_2020)
 
 # Сортировка
@@ -138,7 +147,7 @@ participants = [
     "Никита",
     "Анна",
     "Егор",
-    "Елена"
+    "Елена",
 ]
 
 participants.sort(reverse=True)
@@ -146,15 +155,45 @@ print(participants)
 
 # Сортировка full list по году и по названию
 
+
 def film_sorter(film):
-    title = film['title']
-    year = film['year']
+    title = film["title"]
+    year = film["year"]
 
     title = title if title else "без названия"
     year = year if isinstance(year, int) else 0
     return year, title
 
+
 full_list.sort(key=film_sorter)
 pprint(full_list)
 
-full_list.sort(key=lambda film: (film['year'] if isinstance(film['year'], int) else 0, film['title'] if film['title'] else "без названия"))
+full_list.sort(
+    key=lambda film: (
+        film["year"] if isinstance(film["year"], int) else 0,
+        film["title"] if film["title"] else "без названия",
+    )
+)
+
+
+films = sorted(participants, reverse=True, key=len)
+print(films)
+
+film = {
+    "title": None,
+    "year": "TBA",
+    "director": "TBA",
+    "screenwriter": "Яссер Лестер",
+    "producer": "Кевин Файги и Джонатан Шварц",
+}
+
+print(dict(sorted(film.items())))
+print(dict(sorted(film.items(), key=lambda item: item[1] if item[1] else "")))
+
+sorted_2023 = list(
+    sorted(
+        filter(lambda film: film["year"] == 2023, full_list),
+        key=lambda film: film["title"],
+    )
+)
+print(sorted_2023)

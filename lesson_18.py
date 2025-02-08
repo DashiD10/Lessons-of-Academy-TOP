@@ -84,3 +84,31 @@ print(product_sorter(product_list))
 print(product_sorter(product_list))
     
  
+
+
+from typing import Callable
+
+product_list = ["морковь", "картофель", "свекла", "свекла", "чеснок"]
+
+def use_built_in_func(func: Callable, data_list: list):
+    print(func(data_list))
+
+use_built_in_func(len, product_list)
+use_built_in_func(sorted, product_list)
+use_built_in_func(sum, [1, 2, 3, 4, 5])
+
+
+def simple_decorator(func: Callable, message: str):
+    def wrapper():
+        print(f'Печать до вызова. {message}')
+        func()
+        print(f'Печать после вызова. {message}')
+
+    return wrapper
+
+def foo():
+    print("Вызов foo")
+
+foo_decorated = simple_decorator(foo, "Привет")
+foo_decorated()
+    

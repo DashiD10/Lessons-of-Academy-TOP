@@ -77,10 +77,10 @@ print(get_sum(data_set))
 # Декоратора
 
 
-def simple_decorator2(func: Callable):
-    def wrapper(a: int, b: int):
+def simple_decorator2(func: Callable[..., Any]) -> Callable[..., Any]:
+    def wrapper(*args, **kwargs):
         print(f"Печать до вызова.")
-        result = func(a, b)
+        result = func(*args, **kwargs)
         print(f"Печать после вызова.")
 
         return result
@@ -97,3 +97,29 @@ def multiplay3(a: int, b: int, c: int) -> int:
 
 multiplay2(2, 3)
 multiplay3(2, 3, 4)
+
+
+
+# Напишем полезный декоратор. Который супер точно засекает время работы
+# Любой функции и выводит время работы. Используем специальную функцию
+# Из библиотеки time - perf_counter()
+
+from time import perf_counter
+from data.marvel import full_dict
+
+def timer_decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+
+    def wrapper(*args, **kwargs):
+        start = perf_counter()
+        result = func(*args, **kwargs)
+        end = perf_counter()
+        print(f'Время работы функции {func.__name__}: {end - start:.10f} секунд')
+        return result
+    return wrapper
+
+@timer_decorator
+def get_film_by_year(year: int) -> List[Dict[str, Any]]:
+    return [film for film in full_dict.values() if film['year'] == year]
+
+print(get_film_by_year(2008))
+print(get_film_by_year(2019))

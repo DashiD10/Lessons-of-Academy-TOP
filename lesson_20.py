@@ -23,3 +23,22 @@ print(cleaned_potatos)
 
 cleaned_potatos_2 = map(clean_potato, potatos)
 print(cleaned_potatos_2)
+
+# ФИЛЬТР
+
+def my_filtr(func: Callable, data: Iterable) -> List:
+    result = []
+    for item in data:
+        if func(item):
+            result.append(item)
+
+    return result
+
+def is_bad_wegetable(wegetable: str) -> bool:
+    return "гнилая" not in wegetable.lower()
+
+bad_potatos = my_filtr(is_bad_wegetable, potatos)
+print(bad_potatos)
+
+bad_potatos_2 = list(filter(is_bad_wegetable, potatos))
+print(bad_potatos_2)

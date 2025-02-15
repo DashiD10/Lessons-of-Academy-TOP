@@ -1,31 +1,28 @@
-class AdPost:
-    promote_rate: float = 0.5
+import requests
 
-    def __init__(self, title: str, text: str, price: int):
-        self.title = title
-        self.text = text
-        self.price = price
-        # self.promote_rate: float = 0.5
+requsts_url = "https://api.openweathermap.org/data/2.5/weather?q={city}&appid={appid}&units={units}&lang={lang}"
 
-    def __str__(self) -> str:
-        return f"Заголовок: {self.title}, Текст: {self.text[20]}, Цена: {self.price}"
+class Weather:
+    requests_url = "https://api.openweathermap.org/data/2.5/weather?q={city}&appid={appid}&units={units}&lang={lang}"
 
-    def calculate_promote_cost(self, day: int) -> int:
-        promote_cost = int(self.price * (self.promote_rate / 100) * day)
-        return promote_cost
+    def __init__(self, appid: str, units: str, lang: str):
+        self.appid = appid
+        self.units = units
+        self.lang = lang
+        self.url: str = ''
 
-    @staticmethod
-    def get_peak_hours() -> tuple:
-        return 13, 14, 15
+    def get_url(self, city: str) -> str:
+        self.url = self.requests_url.format(city=city, appid=self.appid, units=self.units, lang=self.lang)
+        return self.url
+    
+    def format_response(self, response: dict) -> str:
+        return f"В городе {response['name']} {response['weather'][0]['description']}, температура {response['main']['temp']}"
+    
+    def get_weather(self, city: str) -> str:
+        url = self.get_url(city)
+        try:
+            response = requests.get(url).json()
+            return self.format_response(response)
+        except Exception as e:
+            return f"Не удалось получить данные о погоде в городе {city}"
 
-
-ap1 = AdPost("Продам ноутбук", "Продам ноутбук в отличном состоянии", 10000)
-ap2 = AdPost("Куплю ноутбук", "Куплю ноутбук в отличном состоянии", 10000)
-
-AdPost.promote_rate = 1
-
-print(ap1)
-print(ap2)
-print(ap1.calculate_promote_cost(10))
-print(ap2.calculate_promote_cost(10))
-print(AdPost.get_peak_hours())

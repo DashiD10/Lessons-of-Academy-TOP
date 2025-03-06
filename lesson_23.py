@@ -333,20 +333,49 @@ class TxtHandler:
             raise PermissionError(f"Нет прав на запись в файл {self.file_path}")
 
 
-# АГРЕГАЦИЯ
-# class WeatherFacade:
-#     """
-#     Фасад для работы с погодой и логированием данных о погоде в текстовый файл.
-#     Methods:
-#         - get_weather(city: str)->str: возвращает погоду для заданного города
-#         - save_weather(city: str)->None: сохраняет погоду для заданного города в файл
-#     """
-#     def __init__(self, weather: Weather, txt_handler: TxtHandler) -> None:
-#         self.weather = weather
-#         self.txt_handler = txt_handler
-
-
-# КОМПОЗИЦИЯ
+class WeatherGUI:
+    """
+    Класс для создания простого графического интерфейса.
+    При нажатии на кнопку вводится название города, выводится информация о погоде,
+    а данные логируются в текстовый файл.
+    """
+    def __init__(self, weather: Weather, txt_handler: TxtHandler) -> None:
+        self.weather = weather
+        self.txt_handler = txt_handler
+        self.root = tk.Tk()
+        self.root.title("Погодное приложение")
+ 
+        self.city_label = tk.Label(self.root, text="Введите название города:")
+        self.city_label.pack(pady=5)
+ 
+        self.city_entry = tk.Entry(self.root, width=40)
+        self.city_entry.pack(pady=5)
+ 
+        self.fetch_button = tk.Button(self.root, text="Получить погоду", command=self.get_weather)
+        self.fetch_button.pack(pady=5)
+ 
+        self.output_text = tk.Text(self.root, height=10, width=70)
+        self.output_text.pack(pady=5)
+ 
+    def get_weather(self) -> None:
+        """
+        Обрабатывает нажатие на кнопку, получает введённый город, формирует запрос,
+        логирует и отображает результат в текстовом поле.
+        """
+        city = self.city_entry.get().strip()
+        if city.lower() == "exit":
+            self.root.quit()
+            return
+        weather_info = self.weather(city)
+        self.txt_handler.append(weather_info)
+        self.output_text.insert(tk.END, f"{weather_info}\n")
+        self.city_entry.delete(0, tk.END)
+ 
+    def run(self) -> None:
+        """
+        Запускает главный цикл графического интерфейса.
+        """
+        self.root.mainloop()
 class WeatherFacade:
     """
     Фасад для работы с погодой и логированием данных о погоде в текстовый файл.
@@ -355,6 +384,7 @@ class WeatherFacade:
     def __init__(self) -> None:
         self.weather = Weather(**SETTINGS)
         self.txt_handler = TxtHandler("weather.txt")
+        self.gui = WeatherGUI(self.weather, self.txt_handler)
 
     def __call__(self) -> None:
         """
@@ -362,12 +392,7 @@ class WeatherFacade:
         :return: None
         """
         while True:
-            city = input("Введите название города (для выхода введите exit): ")
-            if city == "exit":
-                break
-            weather_info = self.weather(city)
-            self.txt_handler.append(weather_info)
-            print(weather_info)
+            self.gui.run()
 
 
 if __name__ == "__main__":

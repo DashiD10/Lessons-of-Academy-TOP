@@ -339,24 +339,27 @@ class WeatherGUI:
     При нажатии на кнопку вводится название города, выводится информация о погоде,
     а данные логируются в текстовый файл.
     """
+
     def __init__(self, weather: Weather, txt_handler: TxtHandler) -> None:
         self.weather = weather
         self.txt_handler = txt_handler
         self.root = tk.Tk()
         self.root.title("Погодное приложение")
- 
+
         self.city_label = tk.Label(self.root, text="Введите название города:")
         self.city_label.pack(pady=5)
- 
+
         self.city_entry = tk.Entry(self.root, width=40)
         self.city_entry.pack(pady=5)
- 
-        self.fetch_button = tk.Button(self.root, text="Получить погоду", command=self.get_weather)
+
+        self.fetch_button = tk.Button(
+            self.root, text="Получить погоду", command=self.get_weather
+        )
         self.fetch_button.pack(pady=5)
- 
+
         self.output_text = tk.Text(self.root, height=10, width=70)
         self.output_text.pack(pady=5)
- 
+
     def get_weather(self) -> None:
         """
         Обрабатывает нажатие на кнопку, получает введённый город, формирует запрос,
@@ -370,12 +373,14 @@ class WeatherGUI:
         self.txt_handler.append(weather_info)
         self.output_text.insert(tk.END, f"{weather_info}\n")
         self.city_entry.delete(0, tk.END)
- 
+
     def run(self) -> None:
         """
         Запускает главный цикл графического интерфейса.
         """
         self.root.mainloop()
+
+
 class WeatherFacade:
     """
     Фасад для работы с погодой и логированием данных о погоде в текстовый файл.

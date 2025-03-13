@@ -3,11 +3,12 @@
 Python: ООП. Ч2. Простое взаимодействие классов. Практика. Урок: 23
 - Класс TxtHandler - для работы с текстовыми документами
 """
+
 from openai import OpenAI
-from settings import DEEP_SEEK_API_KEY 
+from settings import DEEP_SEEK_API_KEY
 
 # client = OpenAI(api_key="DEEP_SEEK_API_KEY", base_url="https://api.deepseek.com")
- 
+
 # response = client.chat.completions.create(
 #     model="deepseek-chat",
 #     messages=[
@@ -16,8 +17,9 @@ from settings import DEEP_SEEK_API_KEY
 #     ],
 #     stream=False
 # )
- 
+
 # print(response.choices[0].message.content)
+
 
 class DeepSeekchat:
     def __init__(self, api_key: str):
@@ -35,10 +37,11 @@ class DeepSeekchat:
                 {"role": "system", "content": self.system_role},
                 {"role": "user", "content": prompt},
             ],
-            stream=False
+            stream=False,
         )
         return response.choices[0].message.content
-    
+
+
 # Пример использования
 
 chat = DeepSeekchat(api_key=DEEP_SEEK_API_KEY)

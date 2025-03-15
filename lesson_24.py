@@ -34,19 +34,9 @@ class Car:
         self.__speed = 0
 
 
-class Driver:
-    def __init__(self, name: str, car: Car):
-        self.name = name
-        self.car = car
-
-    def drive(self, speed: int):
-        print(f"{self.name} сел в {self.car.model}")
-        self.car.set_speed(speed)
-        print(f"Скорость {self.car.model} {self.car._speed}")
-
-
-volga = Car("Volga", "black")
-driver = Driver("Ivan", volga)
-driver.drive(100)
-driver.drive(200)
-driver.drive(300)
+audi = Car("Audi", "black")
+print(audi)
+audi.set_speed(100)
+print(audi.get_speed())
+audi.del_speed()
+print(audi.get_speed())

@@ -10,7 +10,7 @@ class Car:
     def __init__(self, model: str, color: str):
         self.model = model
         self.color = color
-        self._speed = 0
+        self.__speed = 0
         self.__max_speed = 200
 
     def __str__(self):
@@ -25,7 +25,13 @@ class Car:
 
     def set_speed(self, speed: int):
         self.__validate_speed(speed)
-        self._speed = speed
+        self.__speed = speed
+
+    def get_speed(self) -> int:
+        return self.__speed
+    
+    def del_speed(self) -> None:
+        self.__speed = 0
 
 
 class Driver:

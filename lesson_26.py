@@ -5,16 +5,21 @@ class Animal:
         self.name = name
 
     def voice(self):
-        print(f'{self.__class__.__name__} по имени {self.name} издает звук')
+        return f'{self.__class__.__name__} по имени {self.name} издает звук'
 
 class Dog(Animal):
+     # Пайтон ищет метод у собственного класса.
+     # Тут мы переопределили метод voice() у класса Dog.
+     # Теперь будет вызываться метод voice() у класса Dog а не у класса Animal.
     def voice(self):
-        print(f'{self.__class__.__name__} по имени {self.name} лает')
+        # result = Animal.voice(self)
+        result = super().voice()
+        return f'{result}. Пёс по имени {self.name} лает'
 
 class Cat(Animal):
     pass
 
 dog = Dog("Шарик")
 cat = Cat("Святомур")
-dog.voice()
-cat.voice()
+print(dog.voice())
+print(cat.voice())

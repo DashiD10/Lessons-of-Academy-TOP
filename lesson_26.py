@@ -45,4 +45,6 @@ print(cat.voice())
 
 print(Dog.__mro__)
 
-# (<class '__main__.Dog'>, <class '__main__.Animal'>, <class 'object'>)
+print(type(dog))
+print(isinstance(dog, Dog))
+print(isinstance(dog, Animal))

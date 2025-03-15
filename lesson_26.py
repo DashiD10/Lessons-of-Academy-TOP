@@ -11,40 +11,47 @@
  # 1. Концепция наследования
  # Наследование - это механизм, который позволяет создать новый класс на основе уже существующего.
 
-class Animal:
-    def __init__(self, name: str):
-        self.name = name
+from abc import ABC, abstractmethod
+class AbstractDocument(ABC):
+    def __init__(self, file_path: str, encoding: str='utf-8') -> None:
+        self.file_path = file_path
+        self.encoding = encoding
 
-    def voice(self):
-        return f'{self.__class__.__name__} по имени {self.name} издает звук'
+    @abstractmethod
+    def read(self):
+        pass
 
-class Dog(Animal):
-     # Пайтон ищет метод у собственного класса.
-     # Тут мы переопределили метод voice() у класса Dog.
-     # Теперь будет вызываться метод voice() у класса Dog а не у класса Animal.
-    def voice(self):
-        # result = Animal.voice(self)
-        result = super().voice()
-        return f'{result}. Пёс по имени {self.name} лает'
+    @abstractmethod
+    def write(self):
+        pass
 
-class Cat(Animal):
-    def __init__(self, name: str, fluffy_level: int):
-        super().__init__(name)
-        self.fluffy_level = self.__fluffy_validator(fluffy_level)
+    @abstractmethod
+    def append(self):
+        pass
 
-    def __fluffy_validator(self, fluffy_level):
-        if not 0 <= fluffy_level <= 10:
-            raise ValueError("Уровень пушистости должен быть от 0 до 10")
-        else:
-            return fluffy_level
+    def __str__(self):
+        return f"Документ типа {self.__class__.__name__} по пути {self.file_path}"
+    
+class TextDocument(AbstractDocument):
+    def read(self)-> list[str]:
+         with open(self.file_path, "r", encoding=self.encoding) as file:
+             clear_data = [string.strip() for string in file.readlines()]
+             return clear_data
+ 
+    def write(self, *data: str) -> None:
+         with open(self.file_path, "w", encoding=self.encoding) as file:
+             write_data = "\n".join(data)
+             file.write(write_data)
+ 
+    def append(self, *data: str) -> None:
+         with open(self.file_path, "a", encoding=self.encoding) as file:
+             write_data = "\n".join(data)
+             file.write(write_data)
+        
 
-dog = Dog("Шарик")
-cat = Cat("Мурзик", 5)
-print(dog.voice())
-print(cat.voice())
 
-print(Dog.__mro__)
+document = TextDocument("test.txt")
+document.write("Привет", "Мир")
+print(document.read())
 
-print(type(dog))
-print(isinstance(dog, Dog))
-print(isinstance(dog, Animal))
+    

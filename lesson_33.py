@@ -1,74 +1,43 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
 
-class AbstractSimpleQuery(ABC):
-
+class AbstractAIRequest(ABC):
     @abstractmethod
-    def execute(self):
+    def request(self, prompt: str) -> str:
         pass
 
-class AbstractWindowFunction(ABC):  
-    @abstractmethod
-    def execute_window_function(self):
-        pass
-
-class SQLiteSimpleQuery(AbstractSimpleQuery):
-    def execute(self):
-        print(f" Выполняется запрос к SQL для SQLite классом{self.__class__.__name__}")
-
-class PostgreSQLSimpleQuery(AbstractSimpleQuery):
-    def execute(self):
-        print(f" Выполняется запрос к SQL для PostgreSQL классом{self.__class__.__name__}")
-
-class SQLiteWindowFunction(AbstractWindowFunction):
-    def execute_window_function(self):
-        print(f" Выполняется запрос к SQL для SQLite классом{self.__class__.__name__}")
-
-class PostgreSQLWindowFunction(AbstractWindowFunction):
-    def execute_window_function(self):
-        print(f" Выполняется запрос к SQL для PostgreSQL классом{self.__class__.__name__}")
-
-class AbstractSQLConnectionFactory(ABC):
-    @abstractmethod
-    def create_simple_query(self) -> AbstractSimpleQuery:
-        pass
-
-    @abstractmethod
-    def create_window_function(self) -> AbstractWindowFunction:
-        pass
-
-class SQLiteConnectionFactory(AbstractSQLConnectionFactory):
-    def create_simple_query(self) -> AbstractSimpleQuery:
-        return SQLiteSimpleQuery()
+class RealAIRequest(AbstractAIRequest):
+    def request(self, prompt: str) -> str:
+        return f"отправлено запрос к ИИ: {prompt}"
     
-    def create_window_function(self) -> AbstractWindowFunction:
-        return SQLiteWindowFunction()
+class CheckTokens:
     
-class PostgreSQLConnectionFactory(AbstractSQLConnectionFactory):
-    def create_simple_query(self) -> AbstractSimpleQuery:
-        return PostgreSQLSimpleQuery()
+    max_tokens: int = 200_000
 
-    def create_window_function(self) -> AbstractWindowFunction:
-        return PostgreSQLWindowFunction()
+    def check_tokens(self, tokens: int) -> bool:
+        if tokens > self.max_tokens:
+            print(f'Превышен лимит токенов: {tokens} > {self.max_tokens}')
+            return False
+        return True
     
-def main():
-    factories = {
-    "sqlite": SQLiteConnectionFactory,
-    "postgresql": PostgreSQLConnectionFactory
-}
+class ProxyAIRequest(AbstractAIRequest):
+    def __init__(self):
+        self.real_request = RealAIRequest()
+        self.check_tokens = CheckTokens()
 
-    choice = input("Выберите базу данных (sqlite/postgresql): ").strip().lower()
-    factory = factories.get(choice)
-    if not factory:
-        print("Неверный выбор базы данных.")
-        return
+    def request(self, prompt: str) -> str:
+        tokens = len(prompt.split())
+        if self.check_tokens.check_tokens(tokens):
+            print(f'Прокси: количество токенов {tokens} для хапроса {prompt}')
+            return self.real_request.request(prompt)
+        else:
+            return 'Недостаточно токенов'
+            
+
+if __name__ == '__main__':
+    proxy_request = ProxyAIRequest()
+    prompt = 'Как сделать так, чтобы не было прокси?'
+    response = proxy_request.request(prompt)
+    print(response)
     
 
-    connection_factory = factory()
-    simple_query = connection_factory.create_simple_query()
-    window_function = connection_factory.create_window_function()
 
-    simple_query.execute()
-    window_function.execute_window_function()
-
-main()

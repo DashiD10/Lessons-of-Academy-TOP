@@ -1,90 +1,48 @@
 from abc import ABC, abstractmethod
 
-class AbstractState(ABC):
+class AbstractNotification(ABC):
     @abstractmethod
-    def press_play(self):
-        pass
-
-    @abstractmethod
-    def press_pause(self):
-        pass
-
-    @abstractmethod
-    def press_stop(self):
+    def notify(self, message: str) -> None:
         pass
 
 
-class PlayingState(AbstractState):
-    def __init__(self, player):
-        self.player = player
-
-    def press_play(self):
-        print('Музыка уже играет')
-
-    def press_pause(self):
-        print('Пауза')
-        self.player.set_state(PausedState(self.player))
-
-    def press_stop(self):
-            print('Стоп')
-            self.player.set_state(StoppedState(self.player))
+class EmailNotification(AbstractNotification):
+    def notify(self, message: str) -> None:
+        print(f'Отправлено уведомление по электронной почте {message}')
 
 
-class PausedState(AbstractState):
-    def __init__(self, player):
-        self.player = player
-
-    def press_play(self):
-            print('Продолжение воспроизведения')
-            self.player.set_state(PlayingState(self.player))
-
-    def press_pause(self):
-        print('Музыка уже на паузе')
-
-    def press_stop(self):
-            print('Стоп')
-            self.player.set_state(StoppedState(self.player))
+class TelegramNotification(AbstractNotification):
+    def notify(self, message: str) -> None:
+        print(f'Отправлено уведомление в Телеграм {message}')
 
 
-class StoppedState(AbstractState):
-    def __init__(self, player):
-        self.player = player
+class Blog:
+    def __init__(self) -> None:
+        self.subscribers: list[Any] = []
 
-    def press_play(self):
-        print('Воспроизведение начато')
-        self.player.set_state(PlayingState(self.player))
+    def subscribe(self, subscriber: AbstractNotification) -> None:
+        self.subscribers.append(subscriber)
 
-    def press_pause(self):
-            print('Музыка остановлена. Невозможно поставить на паузу')
+    def unsubscribe(self, subscriber: AbstractNotification) -> None:
+        self.subscribers.remove(subscriber)
 
-    def press_stop(self):
-                print('Музыка остановлена')
+    def new_post(self, title: str) -> None:
+        for subscriber in self.subscribers:
+            subscriber.notify(title)
 
 
-class MusicPlayer:
-    def __init__(self):
-        self.state = StoppedState(self)
+blog = Blog()
+email_notification = EmailNotification()
+telegram_notification = TelegramNotification()
 
-    def set_state(self, state: AbstractState):
-        self.state = state
+blog.subscribe(email_notification)
+blog.subscribe(telegram_notification)
 
-    def press_play(self):
-            self.state.press_play()
+blog.new_post('Новая статья')
 
-    def press_pause(self):
-            self.state.press_pause()
+blog.unsubscribe(email_notification)
 
-    def press_stop(self):
-            self.state.press_stop()
+blog.new_post('Новая статья')
 
-if __name__ == '__main__':
-    player = MusicPlayer()
 
-    player.press_play()
-    player.press_pause()
-    player.press_play()
-    player.press_stop()
-    player.press_pause()
-    player.press_stop()
-    player.press_play()
-    
+

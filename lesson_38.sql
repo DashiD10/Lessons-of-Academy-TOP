@@ -85,3 +85,52 @@ VALUES
 ('python411'),
 ('python412'),
 ('python413');
+
+
+------------ Нормализация таблицы студентов -------------
+-- Так как SQLITE не поддерживает переименование и удаление столбцов, нам нужно 
+-- 1. Создать таблицу StudentsNew с нужными столбцами
+-- 2. Убедится что все группы из Students есть в Groups
+-- 3. Пернести данные из Students в StudentsNew
+-- 4. Удалить таблицу Students
+-- 5. Переименовать StudentsNew в Students
+
+
+-- 1. Создаем таблицу StudentsNew с нужными столбцами
+CREATE TABLE IF NOT EXISTS StudentsNew (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    first_name TEXT NOT NULL,
+    middle_name TEXT,
+    last_name TEXT NOT NULL,
+    age INTEGER DEFAULT 0,
+    group_id INTEGER NOT NULL,
+    FOREIGN KEY (group_id) REFERENCES Groups(id)
+);
+
+-- 3. Выбираем из Students Вставляем данные из Students в StudentsNew. Для group_id нужен подзапрос
+-- который вернет id группы по ее имени
+
+INSERT INTO StudentsNew (id, first_name, middle_name, last_name, age, group_id)
+SELECT s.id, s.first_name, s.middle_name, s.last_name, s.age, g.id
+FROM Students AS s
+JOIN Groups AS g ON s.group_name = g.group_name;
+
+
+-- Удалим лишнего студента
+DELETE FROM StudentsNew
+WHERE id = 13;
+
+-- 4. Удаляем таблицу Students
+DROP TABLE IF EXISTS Students;
+
+-- 5. Переименовываем StudentsNew в Students
+ALTER TABLE StudentsNew RENAME TO Students;
+
+
+-- Выборка, обновление, удаление и вставка связанных данных
+-- Многие ко многим
+-- Выборка, обновление, удаление и вставка связанных данных m-to-m
+-- Индексы
+
+DELETE FROM Students
+WHERE id = 14;

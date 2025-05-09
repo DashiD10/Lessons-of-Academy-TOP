@@ -1,43 +1,76 @@
 from abc import ABC, abstractmethod
 
-class AbstractAIRequest(ABC):
+class YandexPaymentSystem:
+
+    def yandex_payment(self, amount: float) -> str:
+        print(f'Оплата {amount} рублей через Яндекс.Деньги')
+
+class RoboKassaPaymentSystem:
+
+    def robo_kassa_payment(self, amount: float, currency: str) -> str:
+        return f'Оплата {amount} {currency} через RoboKassa'
+    
+class AbstractPaymentSystem(ABC):
+
     @abstractmethod
-    def request(self, prompt: str) -> str:
+    def pay(self, amount: float) -> str:
         pass
 
-class RealAIRequest(AbstractAIRequest):
-    def request(self, prompt: str) -> str:
-        return f"отправлено запрос к ИИ: {prompt}"
-    
-class CheckTokens:
-    
-    max_tokens: int = 200_000
+class YandexPaymentSystemAdapter(AbstractPaymentSystem):
+    def __init__(self, yandex_payment_system: YandexPaymentSystem) -> None:
+        self.yandex_payment_system = yandex_payment_system
 
-    def check_tokens(self, tokens: int) -> bool:
-        if tokens > self.max_tokens:
-            print(f'Превышен лимит токенов: {tokens} > {self.max_tokens}')
-            return False
-        return True
+    def pay(self, amount: float) -> str:
+        return self.yandex_payment_system.yandex_payment(amount)
     
-class ProxyAIRequest(AbstractAIRequest):
-    def __init__(self):
-        self.real_request = RealAIRequest()
-        self.check_tokens = CheckTokens()
+class RoboKassaPaymentSystemAdapter(AbstractPaymentSystem):
 
-    def request(self, prompt: str) -> str:
-        tokens = len(prompt.split())
-        if self.check_tokens.check_tokens(tokens):
-            print(f'Прокси: количество токенов {tokens} для хапроса {prompt}')
-            return self.real_request.request(prompt)
+    available_currencies = ['RUB', 'USD', 'EUR']
+    def __init__(self, robo_kassa_payment_system: RoboKassaPaymentSystem) -> None:
+        self.robo_kassa_payment_system = robo_kassa_payment_system
+
+    def __validate_currency(self, currency: str) -> bool:
+        return currency in self.available_currencies
+    
+    def pay(self, amount: float) -> str:
+        currency_input = input('Введите валюту: ')
+
+        if not self.__validate_currency(currency_input):
+            raise ValueError('Неверная валюта')
+        
+        return self.robo_kassa_payment_system.robo_kassa_payment(amount, currency_input)
+    
+class PaymentFacade:
+
+    def  __init__(self) -> None:
+        self.yandex_payment_system = YandexPaymentSystem()
+        self.robokassa_payment_system = RoboKassaPaymentSystem()
+        self.yandex_adapter = YandexPaymentSystemAdapter(self.yandex_payment_system)
+        self.robokassa_adapter = RoboKassaPaymentSystemAdapter(self.robokassa_payment_system)
+
+    def pay_with_yandex(self, amount: float) -> str:
+        return self.yandex_adapter.pay(amount)
+    
+    def pay_with_robo_kassa(self, amount: float) -> str:
+        return self.robokassa_adapter.pay(amount)
+    
+    def __call__(self, amount: float, payment_system: str) -> str:
+        if payment_system == 'yandex':
+            return self.pay_with_yandex(amount)
+        elif payment_system == 'robo_kassa':
+            return self.pay_with_robo_kassa(amount)
         else:
-            return 'Недостаточно токенов'
-            
-
+            raise ValueError('Неверная система оплаты')
+        
 if __name__ == '__main__':
-    proxy_request = ProxyAIRequest()
-    prompt = 'Как сделать так, чтобы не было прокси?'
-    response = proxy_request.request(prompt)
-    print(response)
+    payment_facade = PaymentFacade()
+    
+    try:
+        print(payment_facade(1000, 'yandex'))
+        print(payment_facade(2000, 'robo_kassa'))
+    except ValueError as e:
+        print(e)
+
     
 
 

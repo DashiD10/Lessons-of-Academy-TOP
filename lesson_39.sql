@@ -131,10 +131,3 @@ VALUES (
 -- Внесем студента БЕЗ группы
 INSERT INTO Students (first_name, last_name, age)
 VALUES ('Данила', 'Поперечный', 30);
-
-
-
-
-
-
-

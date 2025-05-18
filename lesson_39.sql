@@ -187,3 +187,56 @@ FROM Students AS s
 LEFT JOIN Groups AS g ON s.group_id = g.id; 
 
 
+-- Первый запрос.
+SELECT t.last_name, g.group_name
+FROM Groups AS g
+JOIN TeacherGroups AS tg ON g.id = tg.group_id
+JOIN Teachers AS t ON tg.teacher_id = t.id
+WHERE t.last_name = 'Микросервисный';
+
+
+-- Второй запрос.
+SELECT t.last_name, GROUP_CONCAT(g.group_name) AS groups
+FROM Teachers AS t
+JOIN TeacherGroups AS tg ON t.id = tg.teacher_id
+JOIN Groups AS g ON tg.group_id = g.id
+WHERE t.last_name = 'Микросервисный'
+GROUP BY t.last_name;
+;
+
+-- Третий запрос.
+SELECT t.last_name, GROUP_CONCAT(g.group_name) AS groups
+FROM Teachers AS t
+JOIN TeacherGroups AS tg ON t.id = tg.teacher_id
+JOIN Groups AS g ON tg.group_id = g.id
+WHERE t.last_name = 'Микросервисный' OR t.last_name = 'Питонья'
+GROUP BY t.last_name;
+
+
+-- Четвертый запрос.
+SELECT t.last_name, GROUP_CONCAT(s.first_name || ' ' || s.last_name) AS students
+FROM Teachers AS t
+JOIN TeacherGroups AS tg ON t.id = tg.teacher_id
+JOIN Groups AS g ON tg.group_id = g.id
+JOIN Students AS s ON s.group_id = g.id
+WHERE t.last_name = 'Микросервисный' OR t.last_name = 'Строкова'
+GROUP BY t.last_name;
+
+
+--Синтаксис транзакций
+
+--ДЛя начала транзакций мы используем BEGIN, BEGIN TRANSACTION
+
+BEGIN TRANSACTION;
+
+DROP TABLE IF EXISTS Students;
+
+SELECT * FROM Students;
+
+
+
+
+
+
+
+

@@ -100,12 +100,11 @@ VALUES
 CREATE TABLE IF NOT EXISTS TeacherGroups (
     teacher_id INTEGER DEFAULT NULL,
     group_id INTEGER DEFAULT NULL,
-    start_date DATE DEFAULT CURRENT_TIMESTAMP,
+    start_date DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (teacher_id) REFERENCES Teachers (id) ON DELETE SET DEFAULT ON UPDATE CASCADE,
-    FOREIGN KEY (group_id) REFERENCES Groups (id) ON DELETE SET DEFAULT ON UPDATE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES Groups (id) ON DELETE SET DEFAULT ON UPDATE CASCADE
     PRIMARY KEY (teacher_id, group_id) -- Автоматическая проверка уникальности пары
 );
-
 
 -- Два отдельных индекса для teacher_id и group_id
 CREATE INDEX IF NOT EXISTS idx_teacher_id ON TeacherGroups (teacher_id);
